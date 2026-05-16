@@ -797,6 +797,10 @@
                     <span class="stat-label">Total Events</span>
                     <span class="stat-value" id="totalCount">8</span>
                 </div>
+                <div class="stat-item" id="activeListItem" style="display: none;">
+                    <span class="stat-label">Currently Active</span>
+                    <span class="stat-value" id="activeList" style="font-size: 1rem; line-height: 1.4;">—</span>
+                </div>
             </div>
         </div>
 
@@ -973,6 +977,21 @@
             document.getElementById('activeCount').textContent = activeCount;
             document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
 
+            // Active events liste
+            const now2 = new Date();
+            const activeEvents = timers.filter(t => {
+                return t.startDate <= now2 && t.endDate > now2;
+            }).map(t => t.name);
+            
+            const activeListEl = document.getElementById('activeList');
+            const activeListItem = document.getElementById('activeListItem');
+            if (activeEvents.length > 0) {
+                activeListEl.textContent = activeEvents.join(', ');
+                activeListItem.style.display = 'flex';
+            } else {
+                activeListItem.style.display = 'none';
+            }
+
             const emptyState = document.getElementById('empty-state');
             emptyState.hidden = timers.length > 0;
         }
@@ -1038,6 +1057,17 @@
 
                 document.getElementById('activeCount').textContent = activeCount;
                 document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+                
+                // Active events liste update
+                const activeEvents = timers.filter(t => t.startDate <= now && t.endDate > now).map(t => t.name);
+                const activeListEl = document.getElementById('activeList');
+                const activeListItem = document.getElementById('activeListItem');
+                if (activeEvents.length > 0) {
+                    activeListEl.textContent = activeEvents.join(', ');
+                    activeListItem.style.display = 'flex';
+                } else {
+                    activeListItem.style.display = 'none';
+                }
             }, 1000);
         }
 
