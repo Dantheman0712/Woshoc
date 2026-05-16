@@ -663,6 +663,222 @@
         .timer-card:nth-child(8) { animation-delay: 0.4s; }
 
         /* ============================================
+           EVENT INFO MODAL (Pop-up)
+           ============================================ */
+
+        .timer-card {
+            cursor: pointer;
+        }
+
+        .info-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-gold);
+            color: var(--primary-navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .timer-card:hover .info-icon {
+            opacity: 1;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg-primary-light);
+            border: 2px solid var(--primary-gold);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark-mode .modal-content {
+            background: var(--bg-secondary-dark);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-tertiary-light);
+            border: 1px solid var(--border-light-mode);
+            color: var(--text-primary-light);
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        body.dark-mode .modal-close {
+            background: var(--bg-tertiary-dark);
+            border-color: var(--border-dark-mode);
+            color: var(--text-primary-dark);
+        }
+
+        .modal-close:hover {
+            background: var(--primary-gold);
+            color: var(--primary-navy);
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-gold);
+        }
+
+        .modal-icon {
+            font-size: 2.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+        }
+
+        body.dark-mode .modal-title {
+            color: var(--primary-gold);
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-gold-dark);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        body.dark-mode .modal-section-title {
+            color: var(--primary-gold);
+        }
+
+        .modal-section-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary-light);
+        }
+
+        body.dark-mode .modal-section-content {
+            color: var(--text-secondary-dark);
+        }
+
+        .points-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .points-list li {
+            padding: 0.4rem 0.75rem;
+            margin-bottom: 0.4rem;
+            background: var(--bg-secondary-light);
+            border-left: 3px solid var(--primary-gold);
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        body.dark-mode .points-list li {
+            background: var(--bg-tertiary-dark);
+        }
+
+        .tips-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tips-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.75rem;
+            position: relative;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .tips-list li::before {
+            content: "✦";
+            position: absolute;
+            left: 0;
+            color: var(--primary-gold);
+            font-weight: 700;
+        }
+
+        .points-highlight {
+            color: var(--primary-gold-dark);
+            font-weight: 700;
+        }
+
+        body.dark-mode .points-highlight {
+            color: var(--primary-gold);
+        }
+
+        @media (max-width: 600px) {
+            .modal-content {
+                padding: 1.5rem;
+                max-height: 90vh;
+            }
+            .modal-title {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* ============================================
            SCROLLBAR STYLING
            ============================================ */
 
@@ -813,6 +1029,18 @@
         <p id="empty-state" class="empty-state" hidden="">No upcoming events.</p>
     </main>
 
+    <!-- Event Info Modal -->
+    <div class="modal-overlay" id="eventModal" onclick="if(event.target===this)closeModal()">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon">⚔️</div>
+                <h2 class="modal-title" id="modalTitle">Event Name</h2>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
         <p>Enterprise Event Countdown System</p>
@@ -821,6 +1049,196 @@
     </footer>
 
     <script>
+        /* ============================================
+           EVENT INFO DATA
+           ============================================ */
+
+        const eventInfo = {
+            "HoC": {
+                overview: "Bi-weekly PvP tournament where you compete against other Chiefs of your state. Lasts 6 days (Gen 1) or 7 days (Gen 2). Win Gems, Hero Fragments (Jeronimo/Philly), and Mythic Manuals.",
+                points: [
+                    "Daily stages with different objectives",
+                    "Top 100 daily ranking: 20,000+ gems",
+                    "Total ranking: Mythic Manuals & SSR Heroes",
+                    "Stage Top 100 requires 50,000+ points"
+                ],
+                tips: [
+                    "Coordination is Key - work with your alliance",
+                    "Timing Matters - wait until others spent resources",
+                    "Act Before Stage Reset - secure rank 1 daily",
+                    "Hoard resources for 2+ months as F2P",
+                    "Save speedups, shards, widgets for specific days",
+                    "Don't compete with whales on Day 1"
+                ]
+            },
+            "City Construction": {
+                overview: "First day of HoC focused on Construction & Research power gains. Each power point earned gives 45 points.",
+                points: [
+                    "1 Power through Construction → 45 points",
+                    "1 Power through Research → 45 points"
+                ],
+                tips: [
+                    "Save building speedups for this day",
+                    "Have research queued before event starts",
+                    "Use bookmark items to maximize power gain",
+                    "Plan upgrades in advance",
+                    "Don't waste on small upgrades - save for big ones",
+                    "Research is cheaper than construction for points"
+                ]
+            },
+            "Hero Development": {
+                overview: "Focus on Lucky Wheel spins and Hero Shard usage. Mythic Shards give massive points (35k each).",
+                points: [
+                    "Play Lucky Wheel → 90,000 points",
+                    "Rare Hero Shard → 4,000 points",
+                    "Epic Hero Shard → 14,000 points",
+                    "Mythic Hero Shard → 35,000 points",
+                    "Gather Resources → 15 points each"
+                ],
+                tips: [
+                    "Save ALL Hero Shards for this day (critical!)",
+                    "Mythic Shards = best points (35k each)",
+                    "Stockpile Lucky Wheel keys before",
+                    "Don't ascend heroes outside this event",
+                    "Hero Shards more valuable than coins for points",
+                    "Gather coal/iron more rewarding than wood/meat"
+                ]
+            },
+            "Train Troops": {
+                overview: "Train as many high-level troops as possible. Higher level = more points exponentially.",
+                points: [
+                    "Level 1 Troop → 90 points",
+                    "Level 5 Troop → 385 points",
+                    "Level 8 Troop → 1,130 points",
+                    "Level 10 Troop → 1,960 points (BEST!)"
+                ],
+                tips: [
+                    "Always train HIGHEST level available",
+                    "Save training speedups for this day",
+                    "Stockpile resources to train max troops",
+                    "All troop types count (infantry, lancer, marksman)",
+                    "Promote troops also counts as training",
+                    "Empty queues before event starts"
+                ]
+            },
+            "Beast Slay": {
+                overview: "Hunt monsters and beasts in the wilderness. Stamina-based event - prepare stamina items in advance.",
+                points: [
+                    "Higher level beasts = more points",
+                    "Bear hunting gives best points",
+                    "Stamina-based scoring"
+                ],
+                tips: [
+                    "Save Stamina items before this day",
+                    "Hunt highest level beasts you can defeat",
+                    "Use rally attacks with alliance for hard beasts",
+                    "Maximize stamina with VIP/items",
+                    "Don't waste stamina on small beasts other days",
+                    "Use Heroes with hunting buffs"
+                ]
+            },
+            "Power Boost": {
+                overview: "Use Essence Stones and Widgets - the most valuable items in HoC. 1 Widget = 100,000 points!",
+                points: [
+                    "1 Widget → 100,000 points (MASSIVE!)",
+                    "1 Essence Stone → 50,000 points",
+                    "Power through Construction → 30 points",
+                    "Power through Research → 30 points",
+                    "Power through Troops → 20 points"
+                ],
+                tips: [
+                    "Widgets are GOLD - save religiously!",
+                    "Never use Widgets outside this event",
+                    "Hoard widgets even if Hero Gear isn't built yet",
+                    "Combine with construction for bonus",
+                    "Maximum efficiency day - prep weeks ahead",
+                    "Use shortest research first for bonus points"
+                ]
+            },
+            "Chief Gear": {
+                overview: "Upgrade Chief Gear for huge point gains. Each gear score point = 500 points.",
+                points: [
+                    "Raise Chief Gear score by 1 → 500 points",
+                    "Power through Construction → 30 points",
+                    "Power through Research → 30 points",
+                    "Power through Troops → 20 points"
+                ],
+                tips: [
+                    "Save Chief Gear materials for this day",
+                    "Don't upgrade Chief Gear outside event",
+                    "Multiple slots = multiple upgrades",
+                    "Save advanced materials especially",
+                    "Plan which gear to upgrade in advance",
+                    "Focus on cheapest upgrades first"
+                ]
+            },
+            "Speedups": {
+                overview: "Use accumulated speedups for massive point gains. 1 minute of speedups = 300 points. 24h speedup = 432,000 points!",
+                points: [
+                    "1 minute speedup → 300 points",
+                    "60min speedup → 18,000 points",
+                    "8h speedup → 144,000 points",
+                    "24h speedup → 432,000 points (MASSIVE!)",
+                    "Mythic Hero Shard → 35,000 points"
+                ],
+                tips: [
+                    "Hoard ALL speedups for this day",
+                    "General speedups convert to points",
+                    "Construction/Research/Training speedups all count",
+                    "Save EVERY speedup for this day",
+                    "Combine with active upgrades for double dipping",
+                    "Don't use ANY speedups in days before"
+                ]
+            }
+        };
+
+        /* ============================================
+           MODAL FUNCTIONS
+           ============================================ */
+
+        function openModal(eventName, icon) {
+            const info = eventInfo[eventName];
+            if (!info) return;
+
+            document.getElementById('modalIcon').textContent = icon;
+            document.getElementById('modalTitle').textContent = eventName;
+            
+            let html = `
+                <div class="modal-section">
+                    <div class="modal-section-title">📋 Overview</div>
+                    <div class="modal-section-content">${info.overview}</div>
+                </div>
+                
+                <div class="modal-section">
+                    <div class="modal-section-title">🎯 Point Values</div>
+                    <ul class="points-list">
+                        ${info.points.map(p => `<li>${p}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="modal-section">
+                    <div class="modal-section-title">💡 Tips & Strategy</div>
+                    <ul class="tips-list">
+                        ${info.tips.map(t => `<li>${t}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('eventModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('eventModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ESC key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
         /* ============================================
            TIMER DATA
            ============================================ */
@@ -944,7 +1362,8 @@
                 const progress = Math.max(0, (totalDuration - Math.max(0, timeUntilEnd)) / totalDuration * 100);
 
                 return `
-                    <article class="timer-card">
+                    <article class="timer-card" onclick="openModal('${timer.name}', '${timer.icon}')">
+                        <div class="info-icon">i</div>
                         <div class="timer-header">
                             <div class="timer-icon">${timer.icon}</div>
                             <div class="timer-meta">
