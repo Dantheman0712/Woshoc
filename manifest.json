@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "SecurityVault Analyzer",
+  "version": "1.0.0",
+  "description": "Enterprise-grade website security & data flow analysis with instant reporting",
+  "icons": {
+    "16": "images/icon-16.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "webRequest",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Analyze this page"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["sniffer.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

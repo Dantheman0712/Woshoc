@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurityVault Analyzer</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-brand">
+                <span class="logo-icon">🔐</span>
+                <h1>SecurityVault</h1>
+            </div>
+            <button class="settings-btn" title="Settings">⚙️</button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Status Display -->
+            <div class="status-card" id="statusCard">
+                <div class="status-icon">🔍</div>
+                <h2>Analyze Page</h2>
+                <p class="url-display" id="currentUrl">Loading...</p>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="overview">Overview</button>
+                <button class="tab-btn" data-tab="security">Security</button>
+                <button class="tab-btn" data-tab="dataflow">Data Flow</button>
+                <button class="tab-btn" data-tab="report">Report</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Overview Tab -->
+                <div class="tab-pane active" id="overview">
+                    <div class="section">
+                        <h3>🌐 Infrastructure</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="label">Hosting</span>
+                                <span class="value" id="hosting">—</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">CDN</span>
+                                <span class="value" id="cdn">—</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">SSL/TLS</span>
+                                <span class="value status-ok" id="ssl">✓ Active</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">TTFB</span>
+                                <span class="value" id="ttfb">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>📊 API Endpoints</h3>
+                        <div class="api-list" id="apiList">
+                            <div class="loading-skeleton"></div>
+                            <div class="loading-skeleton"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Tab -->
+                <div class="tab-pane" id="security">
+                    <div class="section">
+                        <div class="risk-score">
+                            <div class="score-ring" id="scoreRing">
+                                <svg viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" class="bg-circle"></circle>
+                                    <circle cx="50" cy="50" r="45" class="progress-circle" id="progressCircle"></circle>
+                                </svg>
+                                <div class="score-text">
+                                    <span class="score-value" id="riskScore">—</span>
+                                    <span class="score-label">/10</span>
+                                </div>
+                            </div>
+                            <div class="risk-info">
+                                <h4 id="riskLevel">Analyzing...</h4>
+                                <p id="riskDescription"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>⚠️ Issues Found</h3>
+                        <div class="issues-list" id="issuesList">
+                            <div class="loading-skeleton"></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>✅ Strengths</h3>
+                        <div class="strengths-list" id="strengthsList">
+                            <div class="loading-skeleton"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Flow Tab -->
+                <div class="tab-pane" id="dataflow">
+                    <div class="section">
+                        <h3>📡 Data Flow Diagram</h3>
+                        <div class="dataflow-diagram" id="dataflowDiagram">
+                            <div class="flow-item">
+                                <div class="flow-node browser">Browser</div>
+                                <div class="flow-arrow">↓</div>
+                                <div class="flow-node">Server</div>
+                                <div class="flow-arrow">↓</div>
+                                <div class="flow-node">External APIs</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>🔌 External Services</h3>
+                        <div class="external-services" id="externalServices">
+                            <div class="service-item">
+                                <span class="service-name">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>🍪 Data Storage</h3>
+                        <div class="storage-info" id="storageInfo">
+                            <div class="storage-item">
+                                <span>Cookies</span>
+                                <span id="cookieCount">—</span>
+                            </div>
+                            <div class="storage-item">
+                                <span>localStorage</span>
+                                <span id="localStorageCount">—</span>
+                            </div>
+                            <div class="storage-item">
+                                <span>sessionStorage</span>
+                                <span id="sessionStorageCount">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Tab -->
+                <div class="tab-pane" id="report">
+                    <div class="section">
+                        <h3>📋 Generate Report</h3>
+                        <div class="report-options">
+                            <label class="checkbox-group">
+                                <input type="checkbox" id="includeDetails" checked>
+                                <span>Include detailed findings</span>
+                            </label>
+                            <label class="checkbox-group">
+                                <input type="checkbox" id="includeRisks" checked>
+                                <span>Include risk assessment</span>
+                            </label>
+                            <label class="checkbox-group">
+                                <input type="checkbox" id="includeRecommendations" checked>
+                                <span>Include recommendations</span>
+                            </label>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="generateReport">
+                                📄 Generate Report
+                            </button>
+                            <button class="btn btn-secondary" id="downloadReport">
+                                ⬇️ Download PDF
+                            </button>
+                            <button class="btn btn-secondary" id="copyReport">
+                                📋 Copy Markdown
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="report-preview" id="reportPreview">
+                            <p class="placeholder">Generate a report to preview it here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary btn-large" id="analyzeBtn">
+                    🔍 Analyze Now
+                </button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>SecurityVault • Enterprise Edition</p>
+            <p class="version">v1.0.0</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="popup.js"></script>
+</body>
+</html>
