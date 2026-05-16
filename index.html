@@ -1,941 +1,464 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Countdown - Enterprise</title>
-    <style>
-        /* ============================================
-           COLOR SYSTEM - GOLD & NAVY
-           ============================================ */
-
-        :root {
-            /* Light Mode */
-            --primary-navy: #1a2f5a;
-            --primary-gold: #d4a574;
-            --primary-gold-dark: #b8926f;
-            --primary-gold-light: #e8c9b3;
-            
-            --bg-primary-light: #ffffff;
-            --bg-secondary-light: #f8f6f3;
-            --bg-tertiary-light: #f0ede8;
-            
-            --text-primary-light: #1a2f5a;
-            --text-secondary-light: #4a5f7f;
-            --text-tertiary-light: #8a9fb0;
-            
-            --border-light-mode: #e5ddd3;
-            --border-light-mode-strong: #d9cfc2;
-            
-            /* Dark Mode */
-            --bg-primary-dark: #0f1823;
-            --bg-secondary-dark: #1a2538;
-            --bg-tertiary-dark: #233652;
-            
-            --text-primary-dark: #f5f1ed;
-            --text-secondary-dark: #d4c9be;
-            --text-tertiary-dark: #9d9285;
-            
-            --border-dark-mode: #2d3d52;
-            --border-dark-mode-strong: #3d4d62;
-            
-            /* Semantic Colors */
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --danger: #e74c3c;
-            --info: #3498db;
-            
-            /* Shadow */
-            --shadow-sm: 0 2px 8px rgba(26, 47, 90, 0.08);
-            --shadow-md: 0 8px 24px rgba(26, 47, 90, 0.12);
-            --shadow-lg: 0 16px 48px rgba(26, 47, 90, 0.16);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                color-scheme: dark;
-            }
-        }
-
-        /* ============================================
-           RESET & BASE
-           ============================================ */
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            font-size: 16px;
-            -webkit-font-smoothing: antialiased;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-            background: var(--bg-primary-light);
-            color: var(--text-primary-light);
-            line-height: 1.6;
-            transition: background 0.4s ease, color 0.4s ease;
-        }
-
-        body.dark-mode {
-            background: linear-gradient(135deg, var(--bg-primary-dark) 0%, var(--bg-secondary-dark) 100%);
-            color: var(--text-primary-dark);
-        }
-
-        body.light-mode {
-            background: linear-gradient(135deg, var(--bg-primary-light) 0%, var(--bg-secondary-light) 100%);
-            color: var(--text-primary-light);
-        }
-
-        /* ============================================
-           HEADER
-           ============================================ */
-
-        header {
-            background: var(--bg-primary-light);
-            border-bottom: 2px solid var(--border-light-mode);
-            padding: 2rem 1.5rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            transition: all 0.4s ease;
-        }
-
-        body.dark-mode header {
-            background: var(--bg-secondary-dark);
-            border-bottom-color: var(--border-dark-mode-strong);
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .header-icon {
-            font-size: 2.5rem;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .header-title h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: var(--primary-navy);
-        }
-
-        body.dark-mode .header-title h1 {
-            color: var(--primary-gold);
-        }
-
-        .header-subtitle {
-            font-size: 0.875rem;
-            color: var(--text-tertiary-light);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 0.25rem;
-        }
-
-        body.dark-mode .header-subtitle {
-            color: var(--text-tertiary-dark);
-        }
-
-        /* ============================================
-           THEME TOGGLE
-           ============================================ */
-
-        .theme-toggle {
-            display: flex;
-            gap: 0.5rem;
-            background: var(--bg-secondary-light);
-            border: 2px solid var(--border-light-mode);
-            border-radius: 12px;
-            padding: 0.5rem;
-            transition: all 0.4s ease;
-        }
-
-        body.dark-mode .theme-toggle {
-            background: var(--bg-tertiary-dark);
-            border-color: var(--border-dark-mode-strong);
-        }
-
-        .theme-btn {
-            background: none;
-            border: none;
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            font-size: 1.25rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            color: var(--text-tertiary-light);
-            font-weight: 600;
-        }
-
-        body.dark-mode .theme-btn {
-            color: var(--text-tertiary-dark);
-        }
-
-        .theme-btn.active {
-            background: var(--bg-primary-light);
-            color: var(--primary-navy);
-            box-shadow: var(--shadow-sm);
-        }
-
-        body.dark-mode .theme-btn.active {
-            background: var(--bg-secondary-dark);
-            color: var(--primary-gold);
-        }
-
-        /* ============================================
-           MAIN CONTAINER
-           ============================================ */
-
-        main {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 3rem 1.5rem;
-        }
-
-        .container-header {
-            margin-bottom: 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-        }
-
-        .stats-bar {
-            display: flex;
-            gap: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-tertiary-light);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 700;
-        }
-
-        body.dark-mode .stat-label {
-            color: var(--text-tertiary-dark);
-        }
-
-        .stat-value {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: var(--primary-navy);
-        }
-
-        body.dark-mode .stat-value {
-            color: var(--primary-gold);
-        }
-
-        /* ============================================
-           TIMER GRID
-           ============================================ */
-
-        .timer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        @media (max-width: 640px) {
-            .timer-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-        }
-
-        /* ============================================
-           TIMER CARD
-           ============================================ */
-
-        .timer-card {
-            background: var(--bg-primary-light);
-            border: 2px solid var(--border-light-mode);
-            border-radius: 16px;
-            padding: 2rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        body.dark-mode .timer-card {
-            background: var(--bg-secondary-dark);
-            border-color: var(--border-dark-mode);
-        }
-
-        .timer-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-navy), var(--primary-gold));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.6s ease;
-        }
-
-        .timer-card:hover {
-            border-color: var(--primary-gold);
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        body.dark-mode .timer-card:hover {
-            border-color: var(--primary-gold);
-        }
-
-        .timer-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .timer-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            gap: 1rem;
-        }
-
-        .timer-icon {
-            font-size: 2.5rem;
-            flex-shrink: 0;
-        }
-
-        .timer-meta {
-            flex: 1;
-        }
-
-        .timer-name {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary-navy);
-            margin-bottom: 0.25rem;
-        }
-
-        body.dark-mode .timer-name {
-            color: var(--primary-gold);
-        }
-
-        .timer-description {
-            font-size: 0.875rem;
-            color: var(--text-secondary-light);
-            line-height: 1.4;
-        }
-
-        body.dark-mode .timer-description {
-            color: var(--text-secondary-dark);
-        }
-
-        .timer-divider {
-            height: 1px;
-            background: var(--border-light-mode);
-            margin: 1.5rem 0;
-        }
-
-        body.dark-mode .timer-divider {
-            background: var(--border-dark-mode);
-        }
-
-        .timer-status {
-            font-size: 0.75rem;
-            color: var(--text-tertiary-light);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.75rem;
-            font-weight: 700;
-        }
-
-        body.dark-mode .timer-status {
-            color: var(--text-tertiary-dark);
-        }
-
-        .timer-value {
-            font-family: 'Courier New', monospace;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-navy);
-            margin-bottom: 1.5rem;
-            line-height: 1.4;
-            letter-spacing: 0.5px;
-        }
-
-        body.dark-mode .timer-value {
-            color: var(--primary-gold);
-        }
-
-        .timer-end {
-            font-size: 0.875rem;
-            color: var(--text-secondary-light);
-            font-family: 'Courier New', monospace;
-        }
-
-        body.dark-mode .timer-end {
-            color: var(--text-secondary-dark);
-        }
-
-        .timer-progress {
-            margin-top: 1.5rem;
-            height: 6px;
-            background: var(--border-light-mode);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        body.dark-mode .timer-progress {
-            background: var(--border-dark-mode);
-        }
-
-        .timer-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-navy), var(--primary-gold));
-            border-radius: 3px;
-            transition: width 1s linear;
-        }
-
-        /* ============================================
-           TIMER BADGES
-           ============================================ */
-
-        .timer-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border-light-mode);
-        }
-
-        body.dark-mode .timer-badges {
-            border-top-color: var(--border-dark-mode);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.375rem 0.875rem;
-            background: var(--bg-secondary-light);
-            color: var(--text-secondary-light);
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border: 1px solid var(--border-light-mode);
-        }
-
-        body.dark-mode .badge {
-            background: var(--bg-tertiary-dark);
-            color: var(--text-secondary-dark);
-            border-color: var(--border-dark-mode);
-        }
-
-        .badge.active {
-            background: rgba(46, 204, 113, 0.1);
-            color: var(--success);
-            border-color: var(--success);
-        }
-
-        .badge.upcoming {
-            background: rgba(212, 165, 116, 0.1);
-            color: var(--primary-gold-dark);
-            border-color: var(--primary-gold-dark);
-        }
-
-        .badge.limited {
-            background: rgba(243, 156, 18, 0.1);
-            color: var(--warning);
-            border-color: var(--warning);
-        }
-
-        /* ============================================
-           EMPTY STATE
-           ============================================ */
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 1.5rem;
-            color: var(--text-tertiary-light);
-            font-size: 1.125rem;
-        }
-
-        body.dark-mode .empty-state {
-            color: var(--text-tertiary-dark);
-        }
-
-        /* ============================================
-           FOOTER
-           ============================================ */
-
-        footer {
-            background: var(--bg-secondary-light);
-            border-top: 2px solid var(--border-light-mode);
-            padding: 2rem 1.5rem;
-            text-align: center;
-            color: var(--text-tertiary-light);
-            font-size: 0.875rem;
-            margin-top: 4rem;
-            transition: all 0.4s ease;
-        }
-
-        body.dark-mode footer {
-            background: var(--bg-secondary-dark);
-            border-top-color: var(--border-dark-mode-strong);
-            color: var(--text-tertiary-dark);
-        }
-
-        .footer-divider {
-            height: 1px;
-            background: var(--border-light-mode);
-            margin: 1rem 0;
-        }
-
-        body.dark-mode .footer-divider {
-            background: var(--border-dark-mode);
-        }
-
-        /* ============================================
-           ANIMATIONS
-           ============================================ */
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .timer-card {
-            animation: slideIn 0.5s ease-out;
-        }
-
-        .timer-card:nth-child(1) { animation-delay: 0.05s; }
-        .timer-card:nth-child(2) { animation-delay: 0.1s; }
-        .timer-card:nth-child(3) { animation-delay: 0.15s; }
-        .timer-card:nth-child(4) { animation-delay: 0.2s; }
-        .timer-card:nth-child(5) { animation-delay: 0.25s; }
-        .timer-card:nth-child(6) { animation-delay: 0.3s; }
-        .timer-card:nth-child(7) { animation-delay: 0.35s; }
-        .timer-card:nth-child(8) { animation-delay: 0.4s; }
-
-        /* ============================================
-           SCROLLBAR STYLING
-           ============================================ */
-
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary-light);
-        }
-
-        body.dark-mode ::-webkit-scrollbar-track {
-            background: var(--bg-secondary-dark);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-light-mode);
-            border-radius: 5px;
-        }
-
-        body.dark-mode ::-webkit-scrollbar-thumb {
-            background: var(--border-dark-mode-strong);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-gold-dark);
-        }
-
-        /* ============================================
-           RESPONSIVE DESIGN
-           ============================================ */
-
-        @media (max-width: 768px) {
-            header {
-                padding: 1.5rem;
-            }
-
-            .header-content {
-                gap: 1rem;
-            }
-
-            .header-title h1 {
-                font-size: 1.5rem;
-            }
-
-            main {
-                padding: 2rem 1.5rem;
-            }
-
-            .container-header {
-                margin-bottom: 2rem;
-                gap: 1rem;
-            }
-
-            .stats-bar {
-                gap: 1.5rem;
-            }
-
-            .timer-card {
-                padding: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header {
-                padding: 1rem;
-            }
-
-            .header-title h1 {
-                font-size: 1.25rem;
-            }
-
-            .header-icon {
-                font-size: 2rem;
-            }
-
-            main {
-                padding: 1.5rem;
-            }
-
-            .timer-name {
-                font-size: 1.125rem;
-            }
-
-            .timer-value {
-                font-size: 1.25rem;
-            }
-
-            .stat-value {
-                font-size: 1.5rem;
-            }
-
-            .theme-toggle {
-                width: 100%;
-                justify-content: space-around;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countdown Timers</title>
+  <style>
+    :root {
+      --gold:        #d4a574;
+      --gold-light:  #e8c99a;
+      --gold-dark:   #a87840;
+    }
+    [data-theme="dark"] {
+      --bg:          #0d1b2e;
+      --bg-card:     #132140;
+      --border:      #2a4070;
+      --text-primary:#e8dcc8;
+      --text-muted:  #8fa3c0;
+      --text-label:  #b8cce0;
+      --accent:      #d4a574;
+      --shadow:      0 4px 24px rgba(0,0,0,0.5);
+    }
+    [data-theme="light"] {
+      --bg:          #f0f4fa;
+      --bg-card:     #ffffff;
+      --border:      #c8d6ea;
+      --text-primary:#1a2f5a;
+      --text-muted:  #4a6080;
+      --text-label:  #2a4878;
+      --accent:      #a87840;
+      --shadow:      0 4px 24px rgba(26,47,90,0.12);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #09111f 0%, #1a2f5a 60%, #243f78 100%);
+      border-bottom: 2px solid #a87840;
+      padding: 0 1.5rem;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto;
+      height: 64px; display: flex;
+      align-items: center; justify-content: space-between;
+    }
+    .header-brand { display: flex; align-items: center; gap: 0.65rem; }
+    .header-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #a87840, #e8c99a);
+      border-radius: 8px; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .header-title {
+      font-size: 1.15rem; font-weight: 700;
+      color: #e8c99a; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .header-subtitle {
+      font-size: 0.7rem; color: rgba(212,165,116,0.65);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-top: 1px;
+    }
+
+    /* ── Toggle ── */
+    .toggle-wrap {
+      display: flex; align-items: center; gap: 0.5rem;
+      cursor: pointer; user-select: none;
+    }
+    .toggle-label {
+      font-size: 0.75rem; color: rgba(212,165,116,0.7);
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .toggle-track {
+      width: 44px; height: 24px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid #a87840; border-radius: 12px;
+      position: relative; transition: background 0.2s;
+    }
+    .toggle-track.active { background: rgba(212,165,116,0.3); }
+    .toggle-thumb {
+      position: absolute; top: 3px; left: 3px;
+      width: 16px; height: 16px;
+      background: #d4a574; border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle-track.active .toggle-thumb { transform: translateX(20px); }
+
+    /* ── Layout ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+    .section-label {
+      display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;
+    }
+    .section-label::before {
+      content: ''; display: block; width: 4px; height: 20px;
+      background: linear-gradient(180deg, #d4a574, #a87840); border-radius: 2px;
+    }
+    .section-label span {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+    .timer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ── Card ── */
+    .timer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.35rem 1.4rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+      position: relative; overflow: hidden;
+    }
+    .timer-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, #a87840, #e8c99a, #a87840);
+    }
+    .timer-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow), 0 0 0 1px #a87840;
+      border-color: #a87840;
+    }
+    .card-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.2rem 0.55rem; border-radius: 4px; margin-bottom: 0.75rem;
+    }
+    .card-badge.upcoming {
+      background: rgba(212,165,116,0.12); color: #d4a574;
+      border: 1px solid rgba(212,165,116,0.3);
+    }
+    .card-badge.active {
+      background: rgba(72,187,120,0.12); color: #68d391;
+      border: 1px solid rgba(72,187,120,0.3);
+    }
+    .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .badge-dot.pulse { animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.4; transform:scale(.7); }
+    }
+    .card-description {
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--text-primary); line-height: 1.3; margin-bottom: 1rem;
+    }
+    .card-divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+      margin-bottom: 1rem;
+    }
+    .timer-block { margin-bottom: 0.6rem; }
+    .timer-block:last-child { margin-bottom: 0; }
+    .timer-block-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.25rem;
+    }
+    .timer-block-value.ends {
+      font-size: 0.78rem; font-weight: 500; color: var(--text-label);
+    }
+
+    /* ── Segments ── */
+    .segments {
+      display: flex; align-items: flex-start;
+      gap: 0.3rem; flex-wrap: nowrap;
+    }
+    .seg { text-align: center; min-width: 34px; }
+    .seg-value {
+      font-size: 1.4rem; font-weight: 800; color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      line-height: 1; letter-spacing: -0.02em;
+    }
+    .seg-unit {
+      font-size: 0.55rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-muted); margin-top: 2px;
+    }
+    .seg-sep {
+      font-size: 1.4rem; font-weight: 800; color: var(--border);
+      line-height: 1; padding-bottom: 14px; align-self: flex-end;
+    }
+
+    /* ── Empty ── */
+    .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+    .empty-icon  { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+    .empty-title {
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .empty-sub { font-size: 0.8rem; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center; padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted); font-size: 0.7rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .footer span { color: #a87840; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .header-inner   { height: 56px; }
+      .header-title   { font-size: 0.95rem; }
+      .header-subtitle{ display: none; }
+      .container      { padding: 1.25rem 1rem 2rem; }
+      .timer-grid     { grid-template-columns: 1fr; }
+      .seg-value      { font-size: 1.15rem; }
+      .seg            { min-width: 28px; }
+    }
+    @media (min-width: 1400px) {
+      .timer-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
 </head>
-<body class="light-mode">
-    <!-- Header -->
-    <header>
-        <div class="header-content">
-            <div class="header-title">
-                <span class="header-icon">⏱️</span>
-                <div>
-                    <h1>Event Timers</h1>
-                    <p class="header-subtitle">Real-Time Countdown System</p>
-                </div>
-            </div>
-            <div class="theme-toggle">
-                <button class="theme-btn" id="lightBtn" title="Light Mode">☀️</button>
-                <button class="theme-btn active" id="darkBtn" title="Dark Mode">🌙</button>
-            </div>
-        </div>
-    </header>
+<body data-theme="dark">
 
-    <!-- Main Content -->
-    <main>
-        <div class="container-header">
-            <div class="stats-bar">
-                <div class="stat-item">
-                    <span class="stat-label">Active Events</span>
-                    <span class="stat-value" id="activeCount">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Total Events</span>
-                    <span class="stat-value" id="totalCount">8</span>
-                </div>
-            </div>
-        </div>
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-icon">&#9203;</div>
+      <div>
+        <div class="header-title">Event Timers</div>
+        <div class="header-subtitle">Live Countdown Dashboard</div>
+      </div>
+    </div>
+    <div class="toggle-wrap" id="themeToggle"
+         role="button" aria-label="Toggle theme" tabindex="0">
+      <span class="toggle-label" id="toggleLabel">Dark</span>
+      <div class="toggle-track" id="toggleTrack">
+        <div class="toggle-thumb"></div>
+      </div>
+    </div>
+  </div>
+</header>
 
-        <!-- Timer Grid -->
-        <section id="timer-list" class="timer-grid" aria-live="polite">
-            <!-- Timers werden hier eingefügt -->
-        </section>
+<!-- Main -->
+<main class="container">
+  <div class="section-label">
+    <span>Active &amp; Upcoming Events</span>
+  </div>
+  <div class="timer-grid" id="timerGrid"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="empty-icon">&#128235;</div>
+    <div class="empty-title">No Timers Available</div>
+    <div class="empty-sub" id="emptyMsg">No upcoming events scheduled.</div>
+  </div>
+</main>
 
-        <!-- Empty State -->
-        <p id="empty-state" class="empty-state" hidden="">No upcoming events.</p>
-    </main>
+<!-- Footer -->
+<footer class="footer">
+  Data source: <span>wos-hoc-4263</span>
+  &nbsp;&middot;&nbsp; Updates every second
+</footer>
 
-    <!-- Footer -->
-    <footer>
-        <p>Enterprise Event Countdown System</p>
-        <div class="footer-divider"></div>
-        <p style="font-size: 0.75rem; opacity: 0.8;">Last updated: <span id="lastUpdate">—</span></p>
-    </footer>
+<script>
+  /* ── ECHTE ZEITEN aus wos-hoc-4263.support-009.workers.dev/timers.json ── */
+  const timersData = [
+    {
+      "startDate": "2026-05-18T00:00Z",
+      "endDate": "2026-05-24T23:59Z",
+      "description": "HoC"
+    },
+    {
+      "startDate": "2026-05-18T00:00Z",
+      "endDate": "2026-05-18T23:59Z",
+      "description": "City Construction (Construction, Research)"
+    },
+    {
+      "startDate": "2026-05-19T00:00Z",
+      "endDate": "2026-05-19T23:59Z",
+      "description": "Hero Development (Lucky Wheel, Shards, Gathering)"
+    },
+    {
+      "startDate": "2026-05-20T00:00Z",
+      "endDate": "2026-05-20T23:59Z",
+      "description": "Train Troops"
+    },
+    {
+      "startDate": "2026-05-21T00:00Z",
+      "endDate": "2026-05-21T23:59Z",
+      "description": "Beast Slay"
+    },
+    {
+      "startDate": "2026-05-22T00:00Z",
+      "endDate": "2026-05-22T23:59Z",
+      "description": "Power Boost(Essence Stones, Widget, Construction, Research, Troops)"
+    },
+    {
+      "startDate": "2026-05-23T00:00Z",
+      "endDate": "2026-05-23T23:59Z",
+      "description": "Chief Gear, Construction, Research, Troops"
+    },
+    {
+      "startDate": "2026-05-24T00:00Z",
+      "endDate": "2026-05-24T23:59Z",
+      "description": "Speedups"
+    }
+  ];
 
-    <script>
-        /* ============================================
-           TIMER DATA
-           ============================================ */
+  /* ── Theme ── */
+  const body        = document.body;
+  const toggleTrack = document.getElementById('toggleTrack');
+  const toggleLabel = document.getElementById('toggleLabel');
 
-        const timers = [
-            {
-                id: 1,
-                name: "HoC",
-                description: "Hall of Chiefs - PvP Tournament",
-                startDate: new Date(Date.now() + 1.5 * 24 * 60 * 60 * 1000),
-                endDate: new Date(Date.now() + 8.5 * 24 * 60 * 60 * 1000),
-                icon: "⚔️",
-                badges: ["PvP", "Active"]
-            },
-            {
-                id: 2,
-                name: "City Construction",
-                description: "Building & Research Boost Event",
-                startDate: new Date(Date.now() + 1.5 * 24 * 60 * 60 * 1000),
-                endDate: new Date(Date.now() + 2.5 * 24 * 60 * 60 * 1000),
-                icon: "🏗️",
-                badges: ["Building", "Upcoming"]
-            },
-            {
-                id: 3,
-                name: "Hero Development",
-                description: "Lucky Wheel, Shards & Gathering",
-                startDate: new Date(Date.now() + 2.5 * 24 * 60 * 60 * 1000),
-                endDate: new Date(Date.now() + 3.5 * 24 * 60 * 60 * 1000),
-                icon: "🧙",
-                badges: ["Hero", "Rewards"]
-            },
-            {
-                id: 4,
-                name: "Train Troops",
-                description: "Army Training Acceleration",
-                startDate: new Date(Date.now() + 3.5 * 24 * 60 * 60 * 1000),
-                endDate: new Date(Date.now() + 4.5 * 24 * 60 * 60 * 1000),
-                icon: "🪖",
-                badges: ["Military", "Upcoming"]
-            },
-            {
-                id: 5,
-                name: "Beast Slayer",
-                description: "Monster Hunting Campaign",
-                startDate: new Date(Date.now() + 4.5 * 24 * 60 * 60 * 1000),
-                endDate: new Date(Date.now() + 5.5 * 24 * 60 * 60 * 1000),
-                icon: "👹",
-                badges: ["Combat", "Upcoming"]
-            },
-            {
-                id: 6,
-                name: "Power Boost",
-                description: "Essence Stones & Widget Rewards",
-                startDate: new Date(Date.now() + 5.5 * 24 * 60 * 60 * 1000),
-                endDate: new Date(Date.now() + 6.5 * 24 * 60 * 60 * 1000),
-                icon: "⚡",
-                badges: ["Boost", "Limited"]
-            },
-            {
-                id: 7,
-                name: "Chief Gear",
-                description: "Equipment & Research Speedups",
-                startDate: new Date(Date.now() + 6.5 * 24 * 60 * 60 * 1000),
-                endDate: new Date(Date.now() + 7.5 * 24 * 60 * 60 * 1000),
-                icon: "⚙️",
-                badges: ["Equipment", "Upcoming"]
-            },
-            {
-                id: 8,
-                name: "Speedups",
-                description: "Premium Speed Boost Rewards",
-                startDate: new Date(Date.now() + 7.5 * 24 * 60 * 60 * 1000),
-                endDate: new Date(Date.now() + 8.5 * 24 * 60 * 60 * 1000),
-                icon: "🚀",
-                badges: ["Speedup", "Premium"]
-            }
-        ];
+  function applyTheme(t) {
+    body.setAttribute('data-theme', t);
+    const isDark = t === 'dark';
+    toggleTrack.classList.toggle('active', !isDark);
+    toggleLabel.textContent = isDark ? 'Dark' : 'Light';
+    try { localStorage.setItem('cd-theme', t); } catch(e) {}
+  }
 
-        /* ============================================
-           TIME FORMATTING
-           ============================================ */
+  (function () {
+    let saved = 'dark';
+    try { saved = localStorage.getItem('cd-theme') || 'dark'; } catch(e) {}
+    applyTheme(saved);
+  })();
 
-        function formatTime(milliseconds) {
-            if (milliseconds <= 0) return "Event Started";
-            
-            const seconds = Math.floor(milliseconds / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            const days = Math.floor(hours / 24);
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    applyTheme(body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+  document.getElementById('themeToggle').addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      applyTheme(body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+  });
 
-            if (days > 0) {
-                return `${days}d ${hours % 24}h ${minutes % 60}m`;
-            } else if (hours > 0) {
-                return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
-            } else if (minutes > 0) {
-                return `${minutes}m ${seconds % 60}s`;
-            } else {
-                return `${seconds}s`;
-            }
-        }
+  /* ── Helpers ── */
+  function pad(n) { return String(n).padStart(2, '0'); }
 
-        /* ============================================
-           RENDER TIMERS
-           ============================================ */
+  function timeParts(ms) {
+    const t = Math.max(0, Math.floor(ms / 1000));
+    return {
+      d: Math.floor(t / 86400),
+      h: Math.floor((t % 86400) / 3600),
+      m: Math.floor((t % 3600) / 60),
+      s: t % 60
+    };
+  }
 
-        function renderTimers() {
-            const timerList = document.getElementById('timer-list');
-            const now = new Date();
-            let activeCount = 0;
+  function segsHTML(ms) {
+    const { d, h, m, s } = timeParts(ms);
+    const seg = (v, u) =>
+      '<div class="seg">' +
+        '<div class="seg-value">' + pad(v) + '</div>' +
+        '<div class="seg-unit">'  + u      + '</div>' +
+      '</div>';
+    const sep = '<div class="seg-sep">:</div>';
+    return '<div class="segments">' +
+      seg(d,'Days') + sep + seg(h,'Hrs') + sep + seg(m,'Min') + sep + seg(s,'Sec') +
+    '</div>';
+  }
 
-            timerList.innerHTML = timers.map(timer => {
-                const timeUntilStart = timer.startDate - now;
-                const timeUntilEnd = timer.endDate - now;
-                const isActive = timeUntilStart <= 0 && timeUntilEnd > 0;
+  function endsText(ms) {
+    const { d, h, m, s } = timeParts(ms);
+    const p = [];
+    if (d) p.push(d + ' day'  + (d !== 1 ? 's' : ''));
+    if (h) p.push(h + ' hr'   + (h !== 1 ? 's' : ''));
+    if (m) p.push(m + ' min');
+    p.push(s + ' sec');
+    return p.join(' ');
+  }
 
-                if (isActive) activeCount++;
+  function esc(str) {
+    return str
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
 
-                const displayTime = timeUntilStart > 0 ? timeUntilStart : timeUntilEnd;
-                const totalDuration = timer.endDate - timer.startDate;
-                const progress = Math.max(0, (totalDuration - Math.max(0, timeUntilEnd)) / totalDuration * 100);
+  /* ── Timer Setup ── */
+  const timers = timersData.map(t => ({
+    description: t.description,
+    start: Date.parse(t.startDate),
+    end: Date.parse(t.endDate)
+  })).filter(t => !isNaN(t.start) && !isNaN(t.end) && t.end > t.start);
 
-                return `
-                    <article class="timer-card">
-                        <div class="timer-header">
-                            <div class="timer-icon">${timer.icon}</div>
-                            <div class="timer-meta">
-                                <h3 class="timer-name">${timer.name}</h3>
-                                <p class="timer-description">${timer.description}</p>
-                            </div>
-                        </div>
-                        
-                        <p class="timer-status">${timeUntilStart > 0 ? '⏳ Starts in' : '⏰ Ends in'}</p>
-                        <p class="timer-value">${formatTime(displayTime)}</p>
-                        
-                        <div class="timer-divider"></div>
-                        
-                        <div class="timer-progress">
-                            <div class="timer-progress-bar" style="width: ${progress}%"></div>
-                        </div>
-                        
-                        <div class="timer-badges">
-                            ${timer.badges.map(badge => {
-                                let badgeClass = 'upcoming';
-                                if (badge === 'Active' || badge === 'PvP') badgeClass = 'active';
-                                if (badge === 'Limited' || badge === 'Premium') badgeClass = 'limited';
-                                return `<span class="badge ${badgeClass}">${badge}</span>`;
-                            }).join('')}
-                        </div>
-                    </article>
-                `;
-            }).join('');
+  const grid       = document.getElementById('timerGrid');
+  const emptyState = document.getElementById('emptyState');
 
-            document.getElementById('activeCount').textContent = activeCount;
-            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+  /* ── Build card ── */
+  function buildCard(timer) {
+    const card   = document.createElement('div');
+    card.className = 'timer-card';
+    const now    = Date.now();
+    const active = now >= timer.start && now <= timer.end;
+    const cd     = active ? timer.end - now : timer.start - now;
+    const ei     = timer.end - now;
 
-            const emptyState = document.getElementById('empty-state');
-            emptyState.hidden = timers.length > 0;
-        }
+    card.innerHTML =
+      '<div class="card-badge ' + (active ? 'active' : 'upcoming') + '">' +
+        '<div class="badge-dot' + (active ? ' pulse' : '') + '"></div>' +
+        (active ? 'Active' : 'Upcoming') +
+      '</div>' +
+      '<div class="card-description">' + esc(timer.description) + '</div>' +
+      '<div class="card-divider"></div>' +
+      '<div class="timer-block">' +
+        '<div class="timer-block-label">' + (active ? 'Ends in' : 'Starts in') + '</div>' +
+        '<div class="timer-block-value" id="main-' + timer.start + '">' + segsHTML(cd) + '</div>' +
+      '</div>' +
+      (active ? '' :
+        '<div class="timer-block">' +
+          '<div class="timer-block-label">Ends in</div>' +
+          '<div class="timer-block-value ends" id="end-' + timer.start + '">' +
+            endsText(ei) +
+          '</div>' +
+        '</div>'
+      );
+    return card;
+  }
 
-        /* ============================================
-           THEME MANAGEMENT
-           ============================================ */
+  /* ── Render ── */
+  function renderAll() {
+    const now     = Date.now();
+    const visible = timers.filter(t => now <= t.end);
 
-        const lightBtn = document.getElementById('lightBtn');
-        const darkBtn = document.getElementById('darkBtn');
+    if (visible.length === 0) {
+      grid.innerHTML = '';
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
 
-        function setTheme(theme) {
-            document.body.className = theme + '-mode';
-            localStorage.setItem('theme', theme);
-            
-            if (theme === 'dark') {
-                darkBtn.classList.add('active');
-                lightBtn.classList.remove('active');
-            } else {
-                lightBtn.classList.add('active');
-                darkBtn.classList.remove('active');
-            }
-        }
+    // Full rebuild if card count changed
+    if (grid.querySelectorAll('.timer-card').length !== visible.length) {
+      grid.innerHTML = '';
+      visible.forEach(t => grid.appendChild(buildCard(t)));
+      return;
+    }
 
-        lightBtn.addEventListener('click', () => setTheme('light'));
-        darkBtn.addEventListener('click', () => setTheme('dark'));
+    // In-place update
+    visible.forEach(timer => {
+      const active = now >= timer.start && now <= timer.end;
+      const cd     = active ? timer.end - now : timer.start - now;
+      const ei     = timer.end - now;
+      const me     = document.getElementById('main-' + timer.start);
+      const ee     = document.getElementById('end-'  + timer.start);
+      if (me) me.innerHTML    = segsHTML(cd);
+      if (ee) ee.textContent  = endsText(ei);
+    });
+  }
 
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        setTheme(savedTheme);
-
-        /* ============================================
-           TIMER UPDATES
-           ============================================ */
-
-        let updateInterval = null;
-
-        function startUpdates() {
-            renderTimers();
-
-            updateInterval = setInterval(() => {
-                const timerList = document.getElementById('timer-list');
-                const cards = timerList.querySelectorAll('.timer-card');
-                const now = new Date();
-                let activeCount = 0;
-
-                cards.forEach((card, index) => {
-                    const timer = timers[index];
-                    const timeUntilStart = timer.startDate - now;
-                    const timeUntilEnd = timer.endDate - now;
-                    const isActive = timeUntilStart <= 0 && timeUntilEnd > 0;
-                    const totalDuration = timer.endDate - timer.startDate;
-                    const progress = Math.max(0, (totalDuration - Math.max(0, timeUntilEnd)) / totalDuration * 100);
-
-                    if (isActive) activeCount++;
-
-                    const displayTime = timeUntilStart > 0 ? timeUntilStart : timeUntilEnd;
-                    
-                    card.querySelector('.timer-value').textContent = formatTime(displayTime);
-                    card.querySelector('.timer-progress-bar').style.width = progress + '%';
-                    card.querySelector('.timer-status').textContent = timeUntilStart > 0 ? '⏳ Starts in' : '⏰ Ends in';
-                });
-
-                document.getElementById('activeCount').textContent = activeCount;
-                document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
-            }, 1000);
-        }
-
-        startUpdates();
-
-        window.addEventListener('beforeunload', () => {
-            if (updateInterval) clearInterval(updateInterval);
-        });
-    </script>
+  renderAll();
+  setInterval(renderAll, 1000);
+</script>
 </body>
 </html>
